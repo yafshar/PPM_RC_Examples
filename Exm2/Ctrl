@@ -25,7 +25,7 @@ casedim = 2
 #          pixelsize_y: size of pixel in the x direction
 #          pixelsize_z: size of voxel in the z direction
 #--------------------------------------------------------------------------
-inputimage = icecream_PC
+inputimage = icecream_PS
 
 pixelsize_x=1.0
 pixelsize_y=1.0
@@ -51,7 +51,7 @@ pixelsize_y=1.0
 #                                          Per default it will create Histogram of 255 bins size with
 #                                          lowerBound of zero and upperBound of 255, in the case of
 #                                          a 16bit input image you need to give the Histogram size (Histsize)
-#                           * 5 - blob_det !not available
+#                           * 5 - blob_det !not available 
 #                                          performs a scale space blob detection.
 #                                          this is suitable if blobs in the data have different
 #                                          radii. Upper and lower scale can be set with
@@ -68,19 +68,17 @@ pixelsize_y=1.0
 #
 #          initimage: a sample image file to be read for initialization.
 #--------------------------------------------------------------------------
-init_mode=otsu
-lowerBound=0
-upperBound=255
-histsize=255
+init_mode=sphere
+init_rd=8,8,8
+init_sp=25,25,25
 
-initimage=icecream_PC_init
 #--------------------------------------------------------------------------
 #  Preprocessing params:
 #          Preprocessing : Preprocessing, one of:
 #                          Intensity threshold for initial blob detection
 #                          can be set via intensity_ths.
 #--------------------------------------------------------------------------
-intensity_ths = 0.2
+intensity_ths = 0.01
 
 #--------------------------------------------------------------------------
 #  Energy terms:
@@ -111,14 +109,17 @@ intensity_ths = 0.2
 #
 #          energy_region_merge_ths: Threshold prior for region merging
 #--------------------------------------------------------------------------
-energy_ext_name = pc 
+energy_ext_name = PS 
 energy_coeff_data = 1.0
+energy_coeff_balloon=0.05
+energy_local_window_radius=8
 
 energy_int_name = curv
 energy_coeff_length = 0.04
 energy_curvature_mask_radius=4.0
 
-energy_region_merge_ths=0.02
+energy_region_merge_ths=0.2
+
 #--------------------------------------------------------------------------
 #  Digital topology (control)
 #          allow_fusion : Allow fusion of regions?
@@ -136,8 +137,8 @@ allow_handels= TRUE
 #          outputfile: name stub of ouput files. <timestep>.out will be
 #                      appended
 #--------------------------------------------------------------------------
-freqoutput=1
-outputfile=rc_out
+freqoutput  = 1
+outputfile  = rc_out
 
 #--------------------------------------------------------------------------
 #  Diagnostics:
@@ -148,9 +149,9 @@ outputfile=rc_out
 #                             FORMATTED    (i.e. ASCII text)
 #                             UNFORMATTED  (i.e. binary)
 #--------------------------------------------------------------------------
-freqdiag       =1
-diagnosticsfile=rc_diag
-diagnosticsfmt =FORMATTED
+freqdiag        = 1
+diagnosticsfile = rc_diag
+diagnosticsfmt  = FORMATTED
 
 #--------------------------------------------------------------------------
 #  Program control parameters:
@@ -170,7 +171,7 @@ diagnosticsfmt =FORMATTED
 #                           a parallel run.
 #--------------------------------------------------------------------------
 Oscillation_ths = 0.001
-maxiter         = 500
+maxiter         = 500   
 debug           = 0
 abortfile       = ABORT
 logfile         = ppm_rc.log
