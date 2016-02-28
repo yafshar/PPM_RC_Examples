@@ -34,7 +34,7 @@ pixelsize_y=1.0
 #--------------------------------------------------------------------------
 #  Initialization params:
 #          Initialization : Initialization, one of:
-#                           * 1 - fromFile !not implemented
+#                           * 1 - fromFile Not availabel
 #                                          expects an external image with init_image <path>.
 #                           * 2 - rect     initializes with one or several rectangular regions.
 #                                          the size of each edge can be set with init_rect
