@@ -172,8 +172,4 @@ diagnosticsfmt  = FORMATTED
 #--------------------------------------------------------------------------
 Oscillation_ths = 0.001
 maxiter         = 500   
-debug           = 0
-abortfile       = ABORT
 logfile         = ppm_rc.log
-checkmap        = FALSE
-probeproc       = FALSE

@@ -170,9 +170,5 @@ diagnosticsfmt =FORMATTED
 #                           a parallel run.
 #--------------------------------------------------------------------------
 Oscillation_ths = 0.001
-maxiter         = 500
-debug           = 0
-abortfile       = ABORT
+maxiter         = 150
 logfile         = ppm_rc.log
-checkmap        = FALSE
-probeproc       = FALSE
