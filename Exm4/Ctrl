@@ -1,0 +1,176 @@
+#--------------------------------------------------------------------------
+#  MOSAIC Group
+#  Max Planck Institute of Molecular Cell Biology and Genetics
+#  Pfotenhauerstr. 108, 01307 Dresden, Germany
+#
+#  Adapted           - y.afshar           April   2014
+#--------------------------------------------------------------------------
+#--------------------------------------------------------------------------
+#  Case:
+#          casedim:  dimension of the case 
+#
+#          casename: name of this case. "ppm_rc" is the default.
+#                    Must be between 1 and 30 characters long!
+#          
+#--------------------------------------------------------------------------
+casename = 3
+
+#--------------------------------------------------------------------------
+#  Input:
+#          inputimage  : a sample input image file to be read.
+#          ninputimage : Number of image files which create the 3D image 
+#                       (per default one image is considered with no suffix)
+#          createoneimage : Control FLAG to create one TIFF file from several inputs
+#
+#          pixelsize_x: size of pixel in the x direction
+#          pixelsize_y: size of pixel in the x direction
+#          pixelsize_z: size of voxel in the z direction
+#--------------------------------------------------------------------------
+inputimage = sphere_256
+
+pixelsize_x=1.0
+pixelsize_y=1.0
+pixelsize_z=1.0
+#--------------------------------------------------------------------------
+#  Initialization params:
+#          Initialization : Initialization, one of:
+#                           * 1 - fromFile !not available
+#                                          expects an external image with init_image <path>.
+#                           * 2 - rect     initializes with one or several rectangular regions.
+#                                          the size of each edge can be set with init_rect
+#                                          the space between pair of rectangles can be set via
+#                                          init_sp (which should be the length+space in
+#                                          each direction).
+#                           * 3 - sphere   initializes with one or several spherical regions.
+#                                          the radius can be set with init_rd in every direction
+#                                          the space between pair of spheres can be set via
+#                                          init_sp (which should be the 2*radius+space
+#                                          in each direction).
+#                           * 4 - otsu     performs an otsu thresholding, values above the
+#                                          threshold are considered FG.
+#                                          The filter computes the threshold and applies that
+#                                          theshold to the input image using the ThresholdImageFilter.
+#                                          Per default it will create Histogram of 255 bins size with
+#                                          lowerBound of zero and upperBound of 255, in the case of
+#                                          a 16bit input image you need to give the Histogram size (Histsize)
+#                           * 5 - blob_det !not available
+#                                          performs a scale space blob detection.
+#                                          this is suitable if blobs in the data have different
+#                                          radii. Upper and lower scale can be set with
+#                                          init_blobmin and init_blobmax, respectively.
+#                           * 6 - localmax initializes a region at local intensity maxima
+#                                          after blurring with a Gaussian filter of width
+#                                          sigma, and run a floodfill with threshold of
+#                                          local maxima intensity +- tolerance which can be
+#                                          set via Sigma & Tolerance respectively.
+#                                          different values for each direction can be set by
+#                                          init_rd.
+#                                          A good sigma value is approximately one sixth of
+#                                          the object diamter.
+#
+#          initimage: a sample image file to be read for initialization.
+#--------------------------------------------------------------------------
+init_mode=localmax
+Sigma=4
+Tolerance=1
+
+#--------------------------------------------------------------------------
+#  Preprocessing params:
+#          Preprocessing : Preprocessing, one of:
+#                          Intensity threshold for initial blob detection
+#                          can be set via intensity_ths.
+#--------------------------------------------------------------------------
+intensity_ths = 0
+
+#--------------------------------------------------------------------------
+#  Energy terms:
+#          energy_ext_name      : external energy term, one of:
+#                          * 1 -  PC,         piece-wise constant image model (Chan-Vese energy)
+#                          * 2 -  PCGaussian, piece-wise constant image model with Gaussian noise
+#                          * 3 -  PCPoisson,  piece-wise constant image model with Poisson  noise
+#                          * 4 -  PS,         piece-wise smooth image model
+#                          * 5 -  PSGaussian, piece-wise smooth image model with Gaussian noise
+#                          * 6 -  PSPoisson,  piece-wise smooth image model with Poisson  noise
+#
+#          energy_coeff_data    : relative weight for the external energy data term
+#
+#          energy_coeff_balloon : weight for the external energy BalloonFlow
+#                                 the data-dependent balloon energy generates an outward
+#                                 flow whose strength depends on the image intensity.
+#                                 This flow counteracts the curvature-regularization
+#                                 flow in a data-dependent manner. (Used in combination with PS)
+#
+#
+#          energy_int_name      : internal energy term, one of:
+#                          * 1 -  GAMMA, the contour length energy (Contour Length Regularization)
+#                          * 2 -
+#
+#          energy_coeff_length: relative weight for internal energy term
+#
+#          energy_coeff_outward_flow: relative weight for the ConstantOutwardFlow energy term
+#
+#          energy_region_merge_ths: Threshold prior for region merging
+#--------------------------------------------------------------------------
+energy_ext_name = PC
+energy_coeff_data = 1.0
+energy_int_name = curv
+energy_coeff_length = 0.04
+energy_curvature_mask_radius=4.0
+
+energy_region_merge_ths=0.02
+
+#--------------------------------------------------------------------------
+#  Digital topology (control)
+#          allow_fusion : Allow fusion of regions?
+#          allow_fission: Allow fission of regions?
+#          allow_handels: Allow handels of regions?
+#--------------------------------------------------------------------------
+allow_fusion = TRUE
+allow_fission= TRUE
+allow_handels= TRUE
+
+#--------------------------------------------------------------------------
+#  Output:
+#          freqoutput: frequency for writing output files (in iterations).
+#                      These files contain the full segmentation mask.
+#          outputfile: name stub of ouput files. <timestep>.out will be
+#                      appended
+#--------------------------------------------------------------------------
+freqoutput  = 1
+outputfile  = rc_out
+
+#--------------------------------------------------------------------------
+#  Diagnostics:
+#          freqdiag: frequency of diagnostics output in iterations
+#          diagnosticsfile: name of file to which diagnostics will be
+#                    APPENDED.
+#          diagnosticsfmt: format of diagnostics file. One of:
+#                             FORMATTED    (i.e. ASCII text)
+#                             UNFORMATTED  (i.e. binary)
+#--------------------------------------------------------------------------
+freqdiag        = 1
+diagnosticsfile = rc_diag
+diagnosticsfmt  = FORMATTED
+
+#--------------------------------------------------------------------------
+#  Program control parameters:
+#          Oscillation_ths: Oscillation threshold in (Convergence)
+#          maxiter:         maximum number of iterations allowed
+#          debug:           ppm debug level. 0,1, or 2. Set to 0 for normal run.
+#          abortfile:       name of the abort file. At every time step, the
+#                           program will check if a file with this name is
+#                           present in the directory where it was started. If
+#                           such a file is found, the simulation terminates
+#                           gracefully, writing output files.
+#          logfile:         name of the log file used by ppm_rc
+#          checkmap:        Check to result of the global map? This only makes
+#                           sense in a parallel run.
+#          probeproc:       Probe relative processor speeds and use this info
+#                           for load balancing? This only makes sense in
+#                           a parallel run.
+#--------------------------------------------------------------------------
+Oscillation_ths = 0.001
+maxiter         = 500   
+logfile         = ppm_rc.log
+n_io_procs_read = 1
+ 
